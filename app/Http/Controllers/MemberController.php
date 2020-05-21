@@ -15,7 +15,7 @@ class MemberController extends Controller
 
    public function add_member_check(Request $request)
    {
-        $this->validate($request, Member::$rules, Member::$message);
+        $this->validate($request, Member::$rules_member_register, Member::$message_member_register);
         $data = $request->all();
         $request->session()->put($data);
         return view('member_register_confirming',['data' => $data]);
