@@ -41,12 +41,14 @@ class RentalReturnController extends Controller
         $action = $request->get('action','next');
         $input = $request->except('action');
         if($action === 'next') {
-            return redirect()->action('RentalReturnController@circulation')->withInput($input);
+            return redirect()->action('RentalReturnController@validate_check1')->withInput($input);
         } else if($action === 'next_last'){
             $this->validate($request, Document::$rules_rental, Document::$message_rental);
             $catalog = Document::find($request->catalog_id);
             $rental_returndate_value = DB::table('rentals')->select('rental_id')->where('catalog_id',$request->catalog_id)->get();
-            if($rental_returndate_value->max('rental_id') === NULL) {
+            $max_rental_id = $rental_returndate_value->max('rental_id');
+            $rental_returndate = DB::table('rentals')->select('rental_returndate')->where('rental_id', $max_rental_id)->first();
+            if(($rental_returndate->rental_returndate) === NULL) {
                 $this->validate($request, Rental::$rules_rental, Rental::$message_rental);
             }
             $publication = DB::table('catalogs')->select('catalog_publication')->where('catalog_number', $catalog->catalog_number)->first();
