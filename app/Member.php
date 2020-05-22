@@ -8,6 +8,7 @@ class Member extends Model
 {
     protected $primaryKey = 'user_id';
     protected $guarded = array('user_id');
+    protected $table = 'members';
 
     public $timestamps = false;
 
@@ -42,4 +43,9 @@ class Member extends Model
         'user_id.required' => '会員IDは必須です。',
         'user_id.exists' => 'この会員IDは登録されていません。',
     );
+
+    public function getAuthPassword() 
+    {
+        return $this->user_email; 
+    }
 }

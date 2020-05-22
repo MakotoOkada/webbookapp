@@ -8,6 +8,7 @@ class Rental extends Model
 {
     protected $primaryKey = 'rental_id';
     public $timestamps = false;
+    protected $table = 'rentals';
 
     public static $rules_rental = array(
         'catalog_id' => 'unique:rentals,catalog_id',

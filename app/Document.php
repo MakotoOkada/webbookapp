@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class Document extends Model
 {
     protected $primaryKey = 'catalog_id';
+    protected $table = 'documents';
 
     public static $rules_rental = array(
         'catalog_id' => 'required|exists:documents,catalog_id',
