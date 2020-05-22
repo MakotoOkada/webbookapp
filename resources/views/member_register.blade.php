@@ -14,23 +14,23 @@
     <table border="1">
         <tr><th>名前：</th><td><input type="text" name="user_name" value="{{old('user_name')}}"><br>
         @error('user_name')
-            {{$message}}</td>
+            <span class="errorMsg">{{$message}}</span></td>
         @enderror</tr>
         <tr><th>住所：</th><td><input type="text" name="user_address" value="{{old('user_address')}}"><br>
         @error('user_address')
-            {{$message}}</td>
+            <span class="errorMsg">{{$message}}</span></td>
         @enderror</tr>
         <tr><th>電話番号：</th><td><input type="tel" name="user_tel" value="{{old('user_tel')}}"><br>
         @error('user_tel')
-            {{$message}}</td>
+            <span class="errorMsg">{{$message}}</span></td>
         @enderror</tr>
         <tr><th>メールアドレス：</th><td><input type="email" name="user_email" value="{{old('user_email')}}"><br>
         @error('user_email')
-            {{$message}}</td>
+            <span class="errorMsg">{{$message}}</span></td>
         @enderror</tr>
         <tr><th>生年月日：</th><td><input type="text" name="user_birthday" value="{{old('user_birthday')}}" placeholder="例)1990/01/01"><br>
         @error('user_birthday')
-            {{$message}}</td>
+            <span class="errorMsg">{{$message}}</span></td>
         @enderror</tr>
         <tr><th></th><td><input type="submit" value="確認画面へ" class="button next_button"></td></tr>
     </table>
