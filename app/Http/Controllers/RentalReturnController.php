@@ -19,13 +19,8 @@ class RentalReturnController extends Controller
 
     public function validate_check1(Request $request)
     {
-        $rental = Rental::find($request->user_id);
-        if(empty($rental)) {
-            $total = 5;
-        } else {
-            $total_rental = DB::table('rentals')->select('rental_returndate')->where('user_id',$request->user_id)->where('rental_returndate',NULL)->count();
-            $total = 5 - $total_rental;
-        }
+        $total_rental = DB::table('rentals')->select('rental_returndate')->where('user_id',$request->user_id)->where('rental_returndate',NULL)->count();
+        $total = 5 - $total_rental;
         $this->validate($request, Member::$rules_rental, Member::$message_rental);
         $data = $request->all();
         $request->session()->put($data);
@@ -34,13 +29,8 @@ class RentalReturnController extends Controller
 
     public function rental_check(Request $request)
     {
-        $rental = Rental::find($request->user_id);
-        if(empty($rental)) {
-            $total = 5;
-        } else {
-            $total_rental = DB::table('rentals')->select('rental_returndate')->where('user_id',$request->user_id)->where('rental_returndate',NULL)->count();
-            $total = 5 - $total_rental;
-        }
+        $total_rental = DB::table('rentals')->select('rental_returndate')->where('user_id',$request->user_id)->where('rental_returndate',NULL)->count();
+        $total = 5 - $total_rental;
         $data = $request->all();
         $request->session()->put($data);
         return view('circulation_check', ['total' => $total,'user_id' => $request->user_id,'data' => $data]);
@@ -48,15 +38,13 @@ class RentalReturnController extends Controller
 
     public function validate_check2(Request $request)
     {
-        $this->validate($request, Document::$rules_rental, Document::$message_rental);
-       
         $action = $request->get('action','next');
         $input = $request->except('action');
         if($action === 'next') {
             return redirect()->action('RentalReturnController@circulation')->withInput($input);
         } else if($action === 'next_last'){
-            $catalog = Document::find($request->catalog_id)->first();
-            
+            $this->validate($request, Document::$rules_rental, Document::$message_rental);
+            $catalog = Document::find($request->catalog_id);
             $rental_returndate_value = DB::table('rentals')->select('rental_returndate')->where('catalog_id',$request->catalog_id)->get();
             if(in_array(NULL,array($rental_returndate_value),true)) {
                 $this->validate($request, Rental::$rules_rental, Rental::$message_rental);
@@ -91,10 +79,7 @@ class RentalReturnController extends Controller
         if($action === 'next') {
             return redirect()->action('RentalReturnController@circulation')->withInput($input);
         } else if($action === 'next_last'){
-            $catalog = Document::find($request->catalog_id)->first();
-            
-            $rental_returndate_value = DB::table('rentals')->select('rental_returndate')->where('catalog_id',$request->catalog_id)->get();
-            
+            $catalog = Document::find($request->catalog_id);
             $publication = DB::table('catalogs')->select('catalog_publication')->where('catalog_number', $catalog->catalog_number)->first();
             $dt_p = new Carbon($publication->catalog_publication);
             $dt_after3 = Carbon::today()->subMonth(3);
@@ -105,7 +90,6 @@ class RentalReturnController extends Controller
             }
             $dt_now = Carbon::today();
             $rental_limitdate = $dt_now->addDays($publication_day)->toDateString();
-
             $rental = new Rental;
             $rental->user_id = $request->user_id;
             $rental->catalog_id = $request->catalog_id;

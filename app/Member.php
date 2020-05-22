@@ -36,12 +36,13 @@ class Member extends Model
     );
 
     public static $rules_rental = array(
-        'user_id' => 'required|exists:members,user_id',
+        'user_id' => 'required|exists:members,user_id|integer',
     );
 
     public static $message_rental = array(
         'user_id.required' => '会員IDは必須です。',
         'user_id.exists' => 'この会員IDは登録されていません。',
+        'user_id.integer' => '会員IDは整数で入力してください。',
     );
 
     public function getAuthPassword() 
