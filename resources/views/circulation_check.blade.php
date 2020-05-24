@@ -8,12 +8,11 @@
     <table border="1">
         <tr><th>会員ID</th><td><input type="number" name="user_id" value="{{$data['user_id']}}"><br>
         @error('user_id')
-            {{$message}}
+            <span class="errorMsg">{{$message}}</span>
         @enderror
         </td><td><button onclick="location.href='./circulation_check'" class="button next_button" name="action" value="next">次へ</button></td></tr>
     </table>
 </form>
-
 
 @if(!(empty($total)) && $total <= 5 && $total > 0)
 <p>あと{{$total}}冊借りられます</p>

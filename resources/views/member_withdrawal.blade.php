@@ -29,6 +29,13 @@
    <td>{{$item->user_birthday}}</td>
   </tr>
   <tr>
+  <tr>
+  <th></th><td>
+  @error('no_return')
+    <span class="errorMsg">{{$message}}</span>
+  @enderror
+  </td>
+  </tr>
     <th><button type="button" name="back" class="back_button" onclick="history.back()">戻る</button></th>
     <td>
       <form class="" action="member_withdrawal_complete" method="post">

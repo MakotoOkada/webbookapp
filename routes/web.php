@@ -30,9 +30,9 @@ Route::post('/member_register','MemberController@add_member_check')->middleware(
 Route::post('/member_register_complete','MemberController@create_member')->middleware('auth');
 
 Route::get('/circulation', 'RentalReturnController@circulation')->middleware('auth');
-Route::post('/circulation', 'RentalReturnController@validate_check1')->middleware('auth');
-Route::get('/circulation_check', 'RentalReturnController@rental_check')->middleware('auth');
-Route::post('/circulation_check', 'RentalReturnController@validate_check2')->middleware('auth');
+Route::post('/circulation', 'RentalReturnController@validate_check')->middleware('auth');
+Route::get('/circulation_check', 'RentalReturnController@rental')->middleware('auth');
+Route::post('/circulation_check', 'RentalReturnController@validate_check')->middleware('auth');
 Route::post('/circulation_complete', 'RentalReturnController@rental')->middleware('auth');
 
 Auth::routes();
@@ -70,9 +70,6 @@ Route::get('/member_search_result', function (){
 })->middleware('auth');
 Route::post('/member_search_result', 'MemberController@find_member')->middleware('auth');
 Route::get('/returns', 'RentalReturnController@index')->middleware('auth');
-Route::get('/return_complete', function (){
-  return view('return_complete');
-})->middleware('auth');
 Route::post('/return_complete', 'RentalReturnController@post')->middleware('auth');
 
 //杉澤さん

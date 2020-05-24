@@ -4,8 +4,8 @@
 <p>{{$msg}}</p>
   <form method="post" action="/return_complete">
    @csrf
-   <tr><th>資料ID </th><td><input type="number"
-     name="catalog_id"></td></tr>
+   <tr><th>資料ID </th><td><input type="number" name="catalog_id"></td></tr>
+    <input type="hidden" name="rental_returndate" value="{{date('Y/m/d')}}">
     <input type="submit" value="返却">
   </form>
   @error('catalog_id')

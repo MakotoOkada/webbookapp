@@ -19,31 +19,33 @@ class RentalReturnController extends Controller
         return view('circulation');
     }
 
-    public function validate_check1(Request $request)
-    {
-        $total_rental = DB::table('rentals')->select('rental_returndate')->where('user_id',$request->user_id)->where('rental_returndate',NULL)->count();
-        $total = 5 - $total_rental;
-        $this->validate($request, Member::$rules_rental, Member::$message_rental);
-        $data = $request->all();
-        $request->session()->put($data);
-        return view('/circulation_check', ['total' => $total,'user_id' => $request->user_id,'data' => $data]);
-    }
-
-    public function rental_check(Request $request)
-    {
-        $total_rental = DB::table('rentals')->select('rental_returndate')->where('user_id',$request->user_id)->where('rental_returndate',NULL)->count();
-        $total = 5 - $total_rental;
-        $data = $request->all();
-        $request->session()->put($data);
-        return view('circulation_check', ['total' => $total,'user_id' => $request->user_id,'data' => $data]);
-    }
-
-    public function validate_check2(Request $request)
+    public function validate_check(Request $request)
     {
         $action = $request->get('action','next');
         $input = $request->except('action');
         if($action === 'next') {
-            return redirect()->action('RentalReturnController@validate_check1')->withInput($input);
+            $rules_rental = [
+                'user_id' => 'required|exists:members,user_id|integer',
+            ];
+        
+            $message_rental = [
+                'user_id.required' => '会員IDは必須です。',
+                'user_id.exists' => 'この会員IDは登録されていません。',
+                'user_id.integer' => '会員IDは整数で入力してください。',
+            ];
+            $validator = Validator::make($request->all(), $rules_rental, $message_rental);
+    
+            if ($validator->fails()) {
+                return redirect('/circulation')
+                ->withErrors($validator)
+                ->withInput();
+            }
+
+            $total_rental = DB::table('rentals')->select('rental_returndate')->where('user_id',$request->user_id)->where('rental_returndate',NULL)->count();
+            $total = 5 - $total_rental;
+            $data = $request->all();
+            $request->session()->put($data);
+            return view('/circulation_check', ['total' => $total,'user_id' => $request->user_id,'data' => $data]);
         } else if($action === 'next_last'){
             $rules_rental = [
                 'catalog_id' => 'required|exists:documents,catalog_id|integer',
@@ -80,8 +82,8 @@ class RentalReturnController extends Controller
             //借りる本が新刊本かそれ以外かを調べる処理
             $publication = DB::table('catalogs')->select('catalog_publication')->where('catalog_number', $catalog->catalog_number)->first();
             $dt_p = new Carbon($publication->catalog_publication);
-            $dt_after3 = Carbon::today()->subMonth(3);
-            if($dt_after3->lte($dt_p)) {
+            $dt_before3 = Carbon::today()->subMonth(3);
+            if($dt_before3->lte($dt_p)) {
                 $publication_day = 10;
             } else {
                 $publication_day = 15;
@@ -107,13 +109,17 @@ class RentalReturnController extends Controller
         $action = $request->get('action','next');
         $input = $request->except('action');
         if($action === 'next') {
-            return redirect()->action('RentalReturnController@circulation')->withInput($input);
+            $total_rental = DB::table('rentals')->select('rental_returndate')->where('user_id',$request->user_id)->where('rental_returndate',NULL)->count();
+            $total = 5 - $total_rental;
+            $data = $request->all();
+            $request->session()->put($data);
+            return view('circulation_check', ['total' => $total,'user_id' => $request->user_id,'data' => $data]);
         } else if($action === 'next_last'){
             $catalog = Document::find($request->catalog_id);
             $publication = DB::table('catalogs')->select('catalog_publication')->where('catalog_number', $catalog->catalog_number)->first();
             $dt_p = new Carbon($publication->catalog_publication);
-            $dt_after3 = Carbon::today()->subMonth(3);
-            if($dt_after3->lte($dt_p)) {
+            $dt_before3 = Carbon::today()->subMonth(3);
+            if($dt_before3->lte($dt_p)) {
                 $publication_day = 10;
             } else {
                 $publication_day = 15;
@@ -142,7 +148,7 @@ class RentalReturnController extends Controller
     {
         //カタログIDが入力されているかチェック
         $rules = [
-        'catalog_id' => 'required',
+            'catalog_id' => 'required',
         ];
 
         $messages = [
@@ -157,8 +163,8 @@ class RentalReturnController extends Controller
             ->withInput();
         }
         //資料テーブルにカタログIDが存在するかチェック
-            $item = Document::where('catalog_id', $request->catalog_id)->first();
-            if ($item === NULL) {
+        $item = Document::where('catalog_id', $request->catalog_id)->first();
+        if ($item === NULL) {
             $validator->errors()->add('no_catalog', 'この資料は存在しません。');
             return redirect('/returns')
             ->withErrors($validator)
@@ -167,11 +173,14 @@ class RentalReturnController extends Controller
         //貸出台帳にカタログIDが存在するかチェック
         $item = Rental::where('catalog_id', $request->catalog_id)->whereNull('rental_returndate')->first();
         if ($item === NULL) {
-        $validator->errors()->add('no_rental', 'この資料は貸し出されていません。');
-        return redirect('/returns')
-        ->withErrors($validator)
-        ->withInput();
+            $validator->errors()->add('no_rental', 'この資料は貸し出されていません。');
+            return redirect('/returns')
+            ->withErrors($validator)
+            ->withInput();
         }
+
+        $rentals = DB::table('rentals')->select('rental_id')->where('catalog_id',$request->catalog_id)->orderBy('rental_id', 'desc')->first();
+        DB::table('rentals')->where('rental_id',$rentals->rental_id)->update(['rental_returndate' => $request->rental_returndate]);
 
         //処理完了
         return view('returns.return_complete');
