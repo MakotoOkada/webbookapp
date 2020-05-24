@@ -24,10 +24,10 @@
         @error('catalog_id')
             <span class="errorMsg">{{$message}}</span>
         @enderror
-        </td></tr>
+        </td>
         <input type="hidden" name="user_id" value="{{$user_id}}">
         <input type="hidden" name="rental_loandate" value="{{date('Y-m-d')}}">
-        <tr><th></th><td><button onclick="location.href='./circulation_check'" class="button next_button" name="action" value="next_last">貸出</button></td></tr>
+        <td><button onclick="location.href='./circulation_check'" class="button next_button" name="action" value="next_last">貸出</button></td></tr>
     </table>
 </form>
 @elseif($total <= 0)

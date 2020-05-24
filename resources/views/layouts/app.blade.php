@@ -14,18 +14,61 @@
 
     <!-- Fonts -->
     <link rel="dns-prefetch" href="//fonts.gstatic.com">
-    <link href="https://fonts.googleapis.com/css?family=Nunito" rel="stylesheet">
+    
+    <!-- fontawesome -->
+    <link href="https://use.fontawesome.com/releases/v5.13.0/css/all.css" rel="stylesheet">
+    <!-- フォント -->
+    <link href="https://fonts.googleapis.com/css?family=M+PLUS+Rounded+1c" rel="stylesheet">
 
     <!-- Styles -->
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
+    <style>
+    body {
+        width: 800px;
+        margin: auto;
+        margin-top: 0px;
+        color: #222222;
+      }
+    .header {
+        background: linear-gradient(lightgray, white);
+        padding-top: 1px;
+        width: 800px;
+        /* position:fixed; */
+        position:sticky;
+        top:0;
+      }
+      .logo {
+        margin: 0 5px 0 5px;
+      }
+      .header h1 a{
+        color: #4B4E6D;
+        text-decoration: none;
+        padding-left: 1rem;
+      }
+      .wf-roundedmplus1c, button, small, body {
+        font-family: "M PLUS Rounded 1c";
+      }
+      button {
+        /* 角丸 */
+        -moz-border-radius: 5px;
+        -webkit-border-radius: 5px;
+        border-radius: 5px;
+        margin-right: 3px;
+        padding: 0.5rem 1rem 0.5rem 1rem;
+        background-color: #EEE;
+      }
+      button:hover{
+        background-color: #8497dc;
+      }
+    </style>
 </head>
 <body>
     <div id="app">
         <nav class="navbar navbar-expand-md navbar-light bg-white shadow-sm">
-            <div class="container">
-                <a class="navbar-brand" href="{{ url('/') }}">
-                    {{ config('app.name', 'Laravel') }}
-                </a>
+            <div class="container header wf-roundedmplus1c">
+                <h1><a class="navbar-brand" href="{{ url('/login') }}">
+                <i class="fas fa-book-open logo"></i>新宿図書館
+                </a></h1>
                 <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="{{ __('Toggle navigation') }}">
                     <span class="navbar-toggler-icon"></span>
                 </button>
@@ -41,11 +84,11 @@
                         <!-- Authentication Links -->
                         @guest
                             <li class="nav-item">
-                                <a class="nav-link" href="{{ route('login') }}">{{ __('Login') }}</a>
+                                <a class="nav-link" href="{{ route('login') }}">ログイン</a>
                             </li>
                             @if (Route::has('register'))
                                 <li class="nav-item">
-                                    <a class="nav-link" href="{{ route('register') }}">{{ __('Register') }}</a>
+                                    <a class="nav-link" href="{{ route('register') }}">新規登録</a>
                                 </li>
                             @endif
                         @else
