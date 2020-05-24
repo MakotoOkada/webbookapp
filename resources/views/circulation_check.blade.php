@@ -24,6 +24,9 @@
         @error('catalog_id')
             <span class="errorMsg">{{$message}}</span>
         @enderror
+        @error('no_return')
+            <span class="errorMsg">{{$message}}</span>
+        @enderror
         </td>
         <input type="hidden" name="user_id" value="{{$user_id}}">
         <input type="hidden" name="rental_loandate" value="{{date('Y-m-d')}}">

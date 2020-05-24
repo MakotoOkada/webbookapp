@@ -45,7 +45,24 @@ class RentalReturnController extends Controller
         if($action === 'next') {
             return redirect()->action('RentalReturnController@validate_check1')->withInput($input);
         } else if($action === 'next_last'){
-            $this->validate($request, Document::$rules_rental, Document::$message_rental);
+            $rules_rental = [
+                'catalog_id' => 'required|exists:documents,catalog_id|integer',
+            ];
+        
+            $message_rental = [
+                'catalog_id.required' => '資料IDを入力してください。',
+                'catalog_id.exists' => 'この資料IDは登録されていません。',
+                'catalog_id.integer' => '資料IDは整数で入力してください。',
+            ];
+            $validator = Validator::make($request->all(), $rules_rental,
+            $message_rental);
+    
+            if ($validator->fails()) {
+                return redirect('/circulation_check?user_id=' . $request->user_id)
+                ->withErrors($validator)
+                ->withInput();
+            }
+
             $catalog = Document::find($request->catalog_id);
             //貸出中のもを借りないようにする処理
             $rental_returndate_value = DB::table('rentals')->select('rental_id')->where('catalog_id',$request->catalog_id)->orderBy('rental_id', 'desc')->first();
@@ -53,7 +70,10 @@ class RentalReturnController extends Controller
             if($rental_returndate_value !== NULL) {
                 $rental_returndate = DB::table('rentals')->select('rental_returndate')->where('rental_id', $rental_returndate_value->rental_id)->first();
                 if(($rental_returndate->rental_returndate) === NULL) {
-                    $this->validate($request, Rental::$rules_rental, Rental::$message_rental);
+                    $validator->errors()->add('no_return', 'この資料IDはすでに借りられています。');
+                        return redirect('/circulation_check?user_id=' . $request->user_id)
+                        ->withErrors($validator)
+                        ->withInput();
                 }    
             }
             
