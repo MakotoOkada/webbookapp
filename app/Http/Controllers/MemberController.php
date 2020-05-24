@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Support\Facades\DB;
 use App\Member;
 use Illuminate\Http\Request;
+use Validator;
 
 class MemberController extends Controller
 {
@@ -40,4 +41,96 @@ class MemberController extends Controller
         return view('member_register_complete',['form' => Member::find($member->user_id)]);   
         }
    }
+
+   //岩下さん
+   public function remove_member(Request $request)
+   {
+     $user_id = $request->user_id; //$request
+     $item = DB::table('members')->where('user_id',$user_id)->first();
+     return view('member_withdrawal',['item'=>$item]);
+   }
+   public function delete_member(Request $request)
+   {
+     // 退会年月日を追記する
+     $param = ['user_deleteday' => $request -> user_deleteday];
+     $data = DB::table('members')->where('user_id', $request->user_id)->update($param);
+     return view('member_withdrawal_complete');
+   }
+
+
+   //杉澤さん
+   public function edit_member(Request $request){
+     // 会員情報をDBから取ってくる処理など記述する箇所
+     $user_id = $request->user_id; # あとで$id = $request->id;に書き換えよう
+     $user_data = DB::table('members')->where('user_id', $user_id)->first();
+     return view('member_edit', ['user_data' => $user_data,'user_id' => $user_id]);
+   }
+
+   public function edit_member_check(Request $request){
+     $this->validate($request, Member::$edit_member_rules, Member::$edit_member_messages);
+     $edit_member_data = $request->all();
+     $request->session()->put($edit_member_data);
+     return view('member_edit_confirming', compact("edit_member_data"));
+   }
+
+   public function update_member(Request $request){
+     $edit_member_data = $request->all();
+     // // 新しい会員情報に更新する処理を記述する箇所
+     //
+     $request->session()->put($edit_member_data);
+     // 教科書p219参考
+     $user_id = $request->user_id; //TODO あとで変える
+     $param = [
+       'user_name' => $request->user_name,
+       'user_address' => $request->user_address,
+       'user_tel' => $request->user_tel,
+       'user_email' => $request->user_email
+     ];
+     // 会員情報のアップデート
+     DB::table('members')->where('user_id', $user_id)->update($param);
+
+     // アップデート後のデータを取得
+     $user_data = DB::table('members')->where('user_id', $user_id)->first();
+     return view('member_edit_complete', ['user_data' => $user_data]);
+   }
+
+
+   //吉川さん
+  public function search_member(){
+     return view('member_search', ['msg'=>'メールアドレスを入力して下さい。']);
+   }
+
+   public function find_member(Request $request)
+   {
+     //メールアドレスが入力されているかチェック
+     $member_search_rules = [
+       'user_email' => 'required|email',
+     ];
+
+    $member_search_messages = [
+      'user_email.required' => 'メールアドレスは必ず入力して下さい。',
+      'user_email.email' => '正しいメールアドレスの形で入力してください。'
+    ];
+    $validator = Validator::make($request->all(), $member_search_rules,
+    $member_search_messages);
+
+    if ($validator->fails()) {
+      return redirect('/member_search')
+      ->withErrors($validator)
+      ->withInput();
+    }
+    //会員テーブルにメールアドレスが存在するかチェック
+     // $item = Document::where('user_email', $request->user_email)->first();
+     $user_email = $request->user_email;
+     $item = DB::table('members')->where('user_email', $user_email)->first();
+     if ($item === NULL) {
+       $validator->errors()->add('no_user_email', 'このメールアドレスは存在しません。');
+       return redirect('/member_search')
+       ->withErrors($validator)
+       ->withInput();
+     }
+
+      return view('member_search_result', ['user_email' => $user_email, 'item' => $item]);
+   }
+
 }

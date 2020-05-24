@@ -9,6 +9,8 @@ use App\Document;
 use App\Catalog;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
+use App\Http\Requests\RentalReturnRequest;
+use Validator;
 
 class RentalReturnController extends Controller
 {
@@ -45,12 +47,17 @@ class RentalReturnController extends Controller
         } else if($action === 'next_last'){
             $this->validate($request, Document::$rules_rental, Document::$message_rental);
             $catalog = Document::find($request->catalog_id);
-            $rental_returndate_value = DB::table('rentals')->select('rental_id')->where('catalog_id',$request->catalog_id)->get();
-            $max_rental_id = $rental_returndate_value->max('rental_id');
-            $rental_returndate = DB::table('rentals')->select('rental_returndate')->where('rental_id', $max_rental_id)->first();
-            if(($rental_returndate->rental_returndate) === NULL) {
-                $this->validate($request, Rental::$rules_rental, Rental::$message_rental);
+            //貸出中のもを借りないようにする処理
+            $rental_returndate_value = DB::table('rentals')->select('rental_id')->where('catalog_id',$request->catalog_id)->orderBy('rental_id', 'desc')->first();
+            //テーブルに何かしらデータがあるときの処理
+            if($rental_returndate_value !== NULL) {
+                $rental_returndate = DB::table('rentals')->select('rental_returndate')->where('rental_id', $rental_returndate_value->rental_id)->first();
+                if(($rental_returndate->rental_returndate) === NULL) {
+                    $this->validate($request, Rental::$rules_rental, Rental::$message_rental);
+                }    
             }
+            
+            //借りる本が新刊本かそれ以外かを調べる処理
             $publication = DB::table('catalogs')->select('catalog_publication')->where('catalog_number', $catalog->catalog_number)->first();
             $dt_p = new Carbon($publication->catalog_publication);
             $dt_after3 = Carbon::today()->subMonth(3);
@@ -62,6 +69,7 @@ class RentalReturnController extends Controller
             $dt_now = Carbon::today();
             $rental_limitdate = $dt_now->addDays($publication_day)->toDateString();
 
+            //借りる本をretalsテーブルに登録
             $rental = new Rental;
             $rental->user_id = $request->user_id;
             $rental->catalog_id = $request->catalog_id;
@@ -102,5 +110,50 @@ class RentalReturnController extends Controller
             $item = DB::table('rentals')->select('rental_limitdate')->where('rental_id',$rental->rental_id)->first();
             return view('circulation_complete',['item' => $item]);
         }
+    }
+
+
+    //吉川さん
+    public function index(Request $request)
+    {
+        return view('returns.returns', ['msg'=>'資料IDを入力下さい。']);
+    }
+    public function post(Request $request)
+    {
+        //カタログIDが入力されているかチェック
+        $rules = [
+        'catalog_id' => 'required',
+        ];
+
+        $messages = [
+            'catalog_id.required' => '資料IDを入力して下さい。',
+        ];
+        $validator = Validator::make($request->all(), $rules,
+        $messages);
+
+        if ($validator->fails()) {
+            return redirect('/returns')
+            ->withErrors($validator)
+            ->withInput();
+        }
+        //資料テーブルにカタログIDが存在するかチェック
+            $item = Document::where('catalog_id', $request->catalog_id)->first();
+            if ($item === NULL) {
+            $validator->errors()->add('no_catalog', 'この資料は存在しません。');
+            return redirect('/returns')
+            ->withErrors($validator)
+            ->withInput();
+        }
+        //貸出台帳にカタログIDが存在するかチェック
+        $item = Rental::where('catalog_id', $request->catalog_id)->whereNull('rental_returndate')->first();
+        if ($item === NULL) {
+        $validator->errors()->add('no_rental', 'この資料は貸し出されていません。');
+        return redirect('/returns')
+        ->withErrors($validator)
+        ->withInput();
+        }
+
+        //処理完了
+        return view('returns.return_complete');
     }
 }

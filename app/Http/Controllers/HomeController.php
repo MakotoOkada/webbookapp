@@ -25,9 +25,4 @@ class HomeController extends Controller
     {
         return view('home');
     }
-
-    public function username()
-    {
-        return 'user_id';
-    }
 }
