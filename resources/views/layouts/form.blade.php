@@ -4,12 +4,31 @@
     width: 500px;
     text-align: left;
   }
+  #go2top{
+    visibility: visible !important;
+  }
   form{
     text-align: right;
     margin-left: 0;
   }
   .form_items{
     margin-right: 2rem;
+  }
+  table.document_result{
+    margin-left: 1.5rem;
+    width: 100%;
+    /* table-layout: fixed; */
+  }
+  table.document_result th, table.document_result td{
+    padding-right: 0.8rem;
+    padding-left: 0.3rem;
+    /* width: 100%; */
+  }
+  table.document_result td:nth-child(2), table.document_result td:nth-child(4), table.document_result td:nth-child(5){
+   word-wrap: break-word;
+  }
+  table.document_result td:first-child, table.document_result td:nth-child(3), table.document_result td:last-child{
+   width: 100%;
   }
   table {
     margin-left: 250px;

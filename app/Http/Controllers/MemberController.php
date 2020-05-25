@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Support\Facades\DB;
 use App\Member;
+use App\Rental;
 use Illuminate\Http\Request;
 use Validator;
 
@@ -51,10 +52,24 @@ class MemberController extends Controller
    }
    public function delete_member(Request $request)
    {
+      $member_withdrawal_rules = [];
+      $member_withdrawal_messages = [];
+      $validator = Validator::make($request->all(), $member_withdrawal_rules, $member_withdrawal_messages);
+     //返却していない資料がないか調べる
+      $user_id = $request->user_id;
+      $no_return_member = DB::table('rentals')->where('user_id', $user_id)->get(['rental_returndate']);
+      for($i = 0;$i < count($no_return_member);$i++) {
+        if($no_return_member[$i]->rental_returndate === NULL) {
+          $validator->errors()->add('no_return', '返却していない資料があります。');
+          return redirect('/member_withdrawal?user_id=' . $user_id)
+          ->withErrors($validator)
+          ->withInput();
+        }
+      }
      // 退会年月日を追記する
-     $param = ['user_deleteday' => $request -> user_deleteday];
-     $data = DB::table('members')->where('user_id', $request->user_id)->update($param);
-     return view('member_withdrawal_complete');
+      $param = ['user_deleteday' => $request -> user_deleteday];
+      $data = DB::table('members')->where('user_id', $user_id)->update($param);
+      return view('member_withdrawal_complete');
    }
 
 
