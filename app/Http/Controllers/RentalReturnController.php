@@ -43,7 +43,7 @@ class RentalReturnController extends Controller
             }
 
             $no_member = DB::table('members')->select('user_deleteday')->where('user_id', $request->user_id)->first();
-            if($no_member !== NULL) {
+            if($no_member->user_deleteday !== NULL) {
                 $validator->errors()->add('no_member', 'この会員IDは登録されていません。');
                     return redirect('/circulation')
                     ->withErrors($validator)

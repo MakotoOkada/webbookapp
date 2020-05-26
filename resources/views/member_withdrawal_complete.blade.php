@@ -1,4 +1,4 @@
-@extends('layouts.webbookapp')
+@extends('layouts.form')
 
 @section('title','会員退会完了画面')
 

@@ -17,7 +17,7 @@ class Member extends Model
         'user_address' => 'required|max:200',
         'user_tel' => 'required|max:20',
         'user_email' => 'required|max:50|unique:members,user_email|email',
-        'user_birthday' => 'required|date_format:Y/m/d',
+        'user_birthday' => "required|date_format:Y/m/d|before:date('Y/m/d')",
     );
 
     public static $message_member_register = array(
@@ -33,6 +33,7 @@ class Member extends Model
         'user_email.email' => '正しいメールアドレスではありません。',
         'user_birthday.required' => '誕生日は必須項目です。',
         'user_birthday.date_format' => '日付の書き方が間違っています。',
+        'user_birthday.before' => 'この日付は入力できません。',
     );
 
     public function getAuthPassword() 
@@ -56,6 +57,8 @@ class Member extends Model
         'user_name.required' => '名前は必須です',
         'user_address.max' => '住所は200文字以下にしてください',
         'user_address.required' => '住所は必須です',
+        'user_tel.required' => '電話番号は必須です',
+        'user_tel.max' => '電話番号は:max文字以下で入力してください',
         'user_email.email' => 'メールアドレスの形式にしてください',
         'user_email.max' => 'メールアドレスは50文字以下にしてください',
         'user_email.required' => 'メールアドレスは必須です',
