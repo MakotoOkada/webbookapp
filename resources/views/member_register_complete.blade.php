@@ -3,9 +3,9 @@
 @section('title', '会員登録完了画面')
 
 @section('content')
-<p>以下の通り、会員登録が完了しました</p>
+<h2>以下の通り、会員登録が完了しました</h2>
 
-<table border="1">
+<table border="1" class="confirm_table">
     <tr><th>名前：</th><td>{{$form->user_name}}</td></tr>
     <tr><th>住所：</th><td>{{$form->user_address}}</td></tr>
     <tr><th>電話番号：</th><td>{{$form->user_tel}}</td></tr>

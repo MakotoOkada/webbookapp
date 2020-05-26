@@ -8,10 +8,10 @@
   @csrf
   <p>検索したい資料名を入力してください。</p>
   <input type="search" name="catalog_name" placeholder="資料名を入力">
-  <input type="submit" value-"検索" name="search_button">　</button>
+  <input type="submit" value="検索" name="search_button" class="next_button">　</button>
 </form>
 
 {{--戻るボタン--}}
-  <button type="button" name="return_button" onclick="location.href='./after_login_top'">戻る</button>
+  <p><button type="button" class="back_button" name="return_button" onclick="location.href='./after_login_top'">戻る</button></p>
 
 @endsection

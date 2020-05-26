@@ -3,7 +3,7 @@
 @section('title','会員退会画面')
 
 @section('content')
-<table>
+<table border="1" class="confirm_table">
   <tr>
    <th>会員ID</th>
    <td>{{$item->user_id}}</td>
@@ -29,22 +29,24 @@
    <td>{{$item->user_birthday}}</td>
   </tr>
   <tr>
-  <tr>
-  <th></th><td>
   @error('no_return')
     <span class="errorMsg">{{$message}}</span>
   @enderror
-  </td>
   </tr>
-    <th><button type="button" name="back" class="back_button" onclick="history.back()">戻る</button></th>
-    <td>
-      <form class="" action="member_withdrawal_complete" method="post">
+  </table>
+
+  <div class="button_wrap">
+  <div>
+  <button type="button" name="back" class="back_button" onclick="history.back()">戻る</button>
+  </div>
+  <div>
+  <form class="" action="member_withdrawal_complete" method="post">
       @csrf
       <input type="hidden" name="user_deleteday" value="{{date('y/m/d')}}">
       <input type="hidden" name="user_id" value="{{$item->user_id}}">
       <button type="submit" class="next_button">退会する</button>
-    </form>
-    </td>
-  </tr>
-</table>
+    </form> 
+  </div>
+  </div>
+
 @endsection

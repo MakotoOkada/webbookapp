@@ -2,8 +2,9 @@
 @section('title', '資料追加完了画面')
 
 @section('content')
-以下の内容で資料を追加しました。
-<table>
+
+<table border="1" class="confirm_table">
+  <h2 class="top_p">以下の内容で資料を追加しました。</h2></tr>
   <tr><th>ISBN</th><td>{{$add_document_data['catalog_number']}}</td></tr>
   <tr><th>入荷年月日</th><td>{{$add_document_data['arrival_date']}}</td></tr>
   <tr><th>資料名</th><td>{{$add_document_data['catalog_name']}}</td></tr>

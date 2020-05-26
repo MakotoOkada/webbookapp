@@ -6,7 +6,7 @@
    @csrf
    <tr><th>資料ID </th><td><input type="number" name="catalog_id"></td></tr>
     <input type="hidden" name="rental_returndate" value="{{date('Y/m/d')}}">
-    <input type="submit" value="返却">
+    <input type="submit" class="next_button" value="返却">
   </form>
   @error('catalog_id')
   <span class="errorMsg">{{$message}}</span>

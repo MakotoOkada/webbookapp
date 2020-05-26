@@ -31,4 +31,12 @@ class Register extends Model
     'catalog_number.digits_between' => 'ISBNは10桁または13桁で入力してください',
     'catalog_number.required' => 'ISBNは必須です',
     );
+
+    //本間くん
+    public $timestamps=false;
+    protected $primaryKey='catalog_id';
+
+    public function catalog(){
+        return $this->belongsTo('App\Catalog','catalog_number','catalog_number');
+    }
 }

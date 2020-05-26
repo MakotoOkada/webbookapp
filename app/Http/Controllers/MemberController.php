@@ -10,6 +10,7 @@ use Validator;
 
 class MemberController extends Controller
 {
+  //岡田
    public function add_member(Request $request)
    {
         return view('member_register');
@@ -115,16 +116,17 @@ class MemberController extends Controller
      return view('member_search', ['msg'=>'メールアドレスを入力して下さい。']);
    }
 
-   public function find_member(Request $request)
-   {
-     //メールアドレスが入力されているかチェック
-     $member_search_rules = [
-       'user_email' => 'required|email',
-     ];
+  public function find_member(Request $request)
+  {
+    //メールアドレスが入力されているかチェック
+    $member_search_rules = [
+      'user_email' => 'required|email|max:50',
+    ];
 
     $member_search_messages = [
       'user_email.required' => 'メールアドレスは必ず入力して下さい。',
-      'user_email.email' => '正しいメールアドレスの形で入力してください。'
+      'user_email.email' => '正しいメールアドレスの形で入力してください。',
+      'user_email.max' => 'メールアドレスは50文字以内で入力してください。'
     ];
     $validator = Validator::make($request->all(), $member_search_rules,
     $member_search_messages);
@@ -135,17 +137,17 @@ class MemberController extends Controller
       ->withInput();
     }
     //会員テーブルにメールアドレスが存在するかチェック
-     // $item = Document::where('user_email', $request->user_email)->first();
-     $user_email = $request->user_email;
-     $item = DB::table('members')->where('user_email', $user_email)->first();
-     if ($item === NULL) {
-       $validator->errors()->add('no_user_email', 'このメールアドレスは存在しません。');
-       return redirect('/member_search')
-       ->withErrors($validator)
-       ->withInput();
-     }
+    $user_email = $request->user_email;
+    $item = DB::table('members')->where('user_email', $user_email)->first();
+    if ($item === NULL||$item->user_deleteday !== NULL) {
+      $validator->errors()->add('no_user_email', 'このメールアドレスは存在しません。');
+      return redirect('/member_search')
+      ->withErrors($validator)
+      ->withInput();
+    }
 
       return view('member_search_result', ['user_email' => $user_email, 'item' => $item]);
-   }
+  }
+
 
 }

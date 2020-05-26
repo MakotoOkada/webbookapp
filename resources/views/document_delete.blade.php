@@ -3,7 +3,7 @@
 @section('title','資料削除画面')
 
 @section('content')
-<table>
+<table border="1" class="confirm_table">
   <tr>
    <th>ISBN番号</th>
    <td>{{$item->catalog_number}}</td>
@@ -32,23 +32,27 @@
    <th>資料ID</th>
    <td>{{$item->catalog_id}}</td>
   </tr>
-</table>
 <form class="" action="document_delete_complete" method="post">
   @csrf
-  <table>
     <tr>
-      <th>廃棄年月日</th><td><input type="text" name="disposal_date" value="<?php echo date('Y/m/j');?>" required></td>
-    </tr>
-    <tr>
-      <th>備考</th><td><input type="text" name="catalog_remark"></td>
-    </tr>
-    <tr>
-      <th><button type="button" name="back" class="back_button" onclick="histry()">戻る</button></th>
-      <td>
-        <input type="hidden" name="catalog_id" value="{{$item->catalog_id}}">
-        <input type="submit" class="next_button" value="削除する">
+      <th>廃棄年月日</th><td><input type="text" name="disposal_date" value="<?php echo date('Y/m/j');?>" required><br>
+      @error('disposal_date')
+        <span class="errorMsg">{{$message}}</span>
+      @enderror
       </td>
     </tr>
+    <tr>
+      <th>備考</th><td><textarea name="catalog_remark" rows="4" cols="22"></textarea><br>
+      @error('catalog_remark')
+        <span class="errorMsg">{{$message}}</span>
+      @enderror
+      </td>
+    </tr>
+    <input type="hidden" name="catalog_id" value="{{$item->catalog_id}}">
   </table>
+  <div class="button_wrap">
+    <p><button type="button" name="back" class="back_button" onclick="histry()">戻る</button></p>
+    <p><input type="submit" class="next_button" value="削除する"></p>
+  </div>
 </form>
 @endsection

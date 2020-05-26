@@ -3,24 +3,30 @@
   <head>
     <meta charset="utf-8">
     <title>@yield('title')</title>
+    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+    <script type="text/javascript" src="https://blog.webcreativepark.net/sample/js/36/footerFixed.js"></script>
     <style media="screen">
       body {
-        width: 800px;
+        width: 100vw;
         margin: auto;
         margin-top: 0px;
         color: #222222;
+        height: 100vh;
       }
       .header {
         background: linear-gradient(lightgray, white);
         padding-top: 1px;
-        width: 800px;
+        width: 100vw;
+        height: 120px;
         /* position:fixed; */
         position:sticky;
         top:0;
       }
       .content {
         /* margin-top: 2rem; */
+        /* padding-left: 3rem; */
         margin-bottom: 2rem;
+        margin: 0 auto;
         /* padding-top: 146px; */
       }
       .footer {
@@ -39,6 +45,9 @@
         text-decoration: none;
         padding-left: 1rem;
       }
+      .header h1 a:hover{
+        color: #262746;
+      }
       .header h3 {
         padding-left: 2rem;
       }
@@ -52,6 +61,21 @@
       .wf-roundedmplus1c, button, small, body {
         font-family: "M PLUS Rounded 1c";
       }
+      .confirm_table {
+        border-collapse: collapse;
+        text-align: center;
+      }
+      .confirm_table th, .confirm_table td {
+        padding: 10px 5px;
+        width: 150px;
+      }
+      #go2top{
+        visibility: hidden;
+        text-align: center;
+        width: 8rem;
+        /* margin-top: 1rem;
+        margin-left: 50vh; */
+      }
       button {
         /* 角丸 */
         -moz-border-radius: 5px;
@@ -59,17 +83,17 @@
         border-radius: 5px;
       }
       .menu_wrap {
-        margin-left: 2rem;
+        /* margin-left: 2rem; */
       }
       .menu_wrap button {
         margin-right: 3px;
         padding: 0.5rem 1rem 0.5rem 1rem;
         background-color: #EEE;
       }
-      button.logout_button{
+      button.logout_button, button#go2top{
         margin-right: 0.5rem;
       }
-      button.logout_button:hover {
+      button.logout_button:hover, button#go2top:hover {
         background-color: #CCC;
       }
       button.member:hover{
@@ -84,11 +108,8 @@
       button.returns:hover{
         background-color: #dc9184;
       }
-      table {
-          border-collapse:collapse;
-      }
-      td , th {
-        
+      .button {
+        margin: 20px auto;
       }
     </style>
     <!-- fontawesome -->
@@ -99,17 +120,17 @@
   <body>
     <!-- ヘッダー -->
     <div class="header wf-roundedmplus1c">
-      <h1><a href="/after_login_top"><i class="fas fa-book-open logo"></i>新宿図書館</a></h1>
+      <h1><a href="/after_login_top"><i class="fas fa-book-open logo"></i>図書管理システム</a></h1>
       <h3>@yield('title')</h3>
     </div>
-
     <!-- コンテンツ入れるとこ -->
     <div class="content wf-roundedmplus1c">
       @yield('content')
+      <!-- xxx_complete.blade.phpには「トップに戻る」ボタンを追加 -->
+      <button type="button" class="button" name="go2top" id="go2top" onclick="location.href='./after_login_top'">トップに戻る</button>
     </div>
-
     <!-- フッター -->
-    <div class="footer wf-roundedmplus1c">
+    <div class="footer wf-roundedmplus1c" id="footer">
       <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
           <button class="dropdown-item logout_button" href="{{ route('logout') }}" onclick="event.preventDefault();document.getElementById('logout-form').submit();">
           ログアウト(ユーザ：{{ Auth::user()->name }})

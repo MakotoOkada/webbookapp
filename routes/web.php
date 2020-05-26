@@ -53,15 +53,34 @@ Route::get('/document_delete_complete', function(){
 
 // 本間くん
 // 資料検索画面
+//資料検索
 Route::get('/document_search', function () {
-    return view('document_search');
-})->middleware('auth');
-Route::post('/document_search_result','RegisterCatalogController@find_document')->middleware('auth');
+  return view('document_search');
+});
+Route::post('/document_search_result','RegisterCatalogController@find_document');
 
-//資料検索結果画面
+////資料検索結果
 Route::get('/document_search_result', function () {
-    return view('document_search_result');
-})->middleware('auth');
+  return view('document_search_result');
+});
+
+//資料変更
+Route::get('/document_change','RegisterCatalogController@document_change');
+Route::post('/document_change','RegisterCatalogController@document_change');
+Route::post('/document_change_confirming','RegisterCatalogController@edit_document_check');
+
+////資料変更確認
+Route::get('/document_change_confirming', function () {
+  return view('document_change_confirming');
+});
+
+////資料変更完了
+Route::get('/document_change_complete', function () {
+  return view('document_change_complete');
+});
+
+Route::post('/document_change_complete','RegisterCatalogController@document_change_complete');
+
 
 //吉川さん
 Route::get('/member_search', 'MemberController@search_member')->middleware('auth');
@@ -74,11 +93,23 @@ Route::post('/return_complete', 'RentalReturnController@post')->middleware('auth
 
 //杉澤さん
 Route::get('/member_edit', 'MemberController@edit_member')->middleware('auth');
+Route::post('/member_edit', 'MemberController@edit_member')->middleware('auth');
+Route::get('/member_edit_confirming', 'MemberController@edit_member_check')->middleware('auth');
 Route::post('/member_edit_confirming', 'MemberController@edit_member_check')->middleware('auth');
 Route::post('/member_edit_complete', 'MemberController@update_member')->middleware('auth');
-Route::get('/document_add', 'RegisterCatalogController@add_document')->middleware('auth');
-Route::get('/document_add_confirming', 'RegisterCatalogController@add_document')->middleware('auth'); //TODO 変える
+Route::get('/document_add', function(){
+  return view('document_add');
+})->middleware('auth');
+Route::post('document_add', 'RegisterCatalogController@add_document')->middleware('auth');
+Route::get('/document_add_confirming', 'RegisterCatalogController@add_document_check')->middleware('auth'); //TODO 変える
+// Route::get('/document_add_confirming', function(Request $request){
+//     $add_document_data = array('catalog_data' => 12345678907);
+//     return view('document_add_confirming', $add_document_data);
+// });
 Route::post('/document_add_confirming', 'RegisterCatalogController@add_document_check')->middleware('auth');
-Route::get('/document_add_last_confirming', 'RegisterCatalogController@add_document_check')->middleware('auth');
+// Route::get('/document_add_last_confirming', 'RegisterCatalogController@add_document_check');
+Route::get('/document_add_last_confirming', function() {
+  return view('document_add_last_confirming');
+})->middleware('auth');
 Route::post('/document_add_last_confirming', 'RegisterCatalogController@add_document_last_check')->middleware('auth');
 Route::post('/document_add_complete', 'RegisterCatalogController@create_document')->middleware('auth');

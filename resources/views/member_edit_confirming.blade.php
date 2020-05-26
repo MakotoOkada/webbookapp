@@ -3,7 +3,7 @@
 @section('title', '会員編集確認画面')
 
 @section('content')
-<table>
+<table border="1" class="confirm_table">
   <tr><th>名前</th><td>{{$edit_member_data['user_name']}}</td></tr>
   <tr><th>住所</th><td>{{$edit_member_data['user_address']}}</td></tr>
   <tr><th>電話番号</th><td>{{$edit_member_data['user_tel']}}</td></tr>

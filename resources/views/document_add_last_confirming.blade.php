@@ -2,7 +2,7 @@
 @section('title', '資料追加最終確認画面')
 
 @section('content')
-<table>
+<table border="1" class="confirm_table">
   <tr><th>ISBN</th><td>{{$add_document_data['catalog_number']}}</td></tr>
   <tr><th>入荷年月日</th><td>{{$add_document_data['arrival_date']}}</td></tr>
   <tr><th>資料名</th><td>{{$add_document_data['catalog_name']}}</td></tr>
