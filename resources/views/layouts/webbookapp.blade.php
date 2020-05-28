@@ -6,6 +6,14 @@
     <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
     <script type="text/javascript" src="https://blog.webcreativepark.net/sample/js/36/footerFixed.js"></script>
     <style media="screen">
+    @media screen and (min-width: 711px){
+        .br-pc { display:block; }
+        .br-sp { display:none; }
+      }
+      @media screen and (max-width: 711px){
+        .br-pc { display:none; }
+        .br-sp { display:block; }
+      }
       body {
         width: 100vw;
         margin: auto;
@@ -58,7 +66,7 @@
         color: Red;
         font-size: 80%;
       }
-      .wf-roundedmplus1c, button, small, body {
+      .wf-roundedmplus1c, button, small, body ,textarea{
         font-family: "M PLUS Rounded 1c";
       }
       .confirm_table {
@@ -107,6 +115,9 @@
       }
       button.returns:hover{
         background-color: #dc9184;
+      }
+      button.member, button.document, button.circulation, button.returns{
+        width: 7rem;
       }
       .button {
         margin: 20px auto;

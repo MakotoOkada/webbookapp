@@ -5,11 +5,11 @@
 @section('content')
 
 <table border="1" class="confirm_table">
-        <tr><th>名前：</th><td>{{$data['user_name']}}</td></tr>
-        <tr><th>住所：</th><td>{{$data['user_address']}}</td></tr>
-        <tr><th>電話番号：</th><td>{{$data['user_tel']}}</td></tr>
-        <tr><th>メールアドレス：</th><td>{{$data['user_email']}}</td></tr>
-        <tr><th>生年月日：</th><td>{{$data['user_birthday']}}</td></tr>
+        <tr><th>名前</th><td>{{$data['user_name']}}</td></tr>
+        <tr><th>住所</th><td>{{$data['user_address']}}</td></tr>
+        <tr><th>電話番号</th><td>{{$data['user_tel']}}</td></tr>
+        <tr><th>メールアドレス</th><td>{{$data['user_email']}}</td></tr>
+        <tr><th>生年月日</th><td>{{$data['user_birthday']}}</td></tr>
 </table>
         
 <form action="/member_register_complete" method="post">

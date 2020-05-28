@@ -5,13 +5,18 @@
 @section('content')
 <style>
   .content {
-    margin-left: 0 !important;
+    width: 100%;
   }
 </style>
 
+<form action="/document_search_result" method="post">
+  @csrf
+  <input type="search" name="catalog_name" value="{{$search_name}}" placeholder="資料名を入力">
+  <input type="submit" value="検索" name="search_button" class="next_button">
+</form>
+
 {{--検索結果フォーム--}}{{--資料検索結果--}}
 <p>　＜資料検索結果＞　{{$search_count}}件ヒットしました</p>
-@csrf
 <!-- <input type="text" name="catalog_name"> -->
 <!-- <input type="submit" name="submit" value="検索"> -->
 
@@ -50,7 +55,11 @@
     <input type="hidden" name="disposal_date" value="{{$register->disposal_date}}">
   <input type="submit" class="next_button" value="変更">
 </form></td>
-    <td><button class="back_button" onclick="location.href = './document_delete'">削除</button></td>
+<form action="document_delete">
+  @csrf
+  <input type="hidden" name="catalog_id" value="{{$register->catalog_id}}">
+  <td><button class="back_button" onclick="location.href = './document_delete'">削除</button></td>
+</form>
   </tr>
   @endforeach
   @endif

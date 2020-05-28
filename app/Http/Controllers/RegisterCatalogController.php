@@ -14,7 +14,7 @@ class RegisterCatalogController extends Controller
   public function remove_document(Request $request)
   {
     //岩下
-    $catalog_id = 1; //$request
+    $catalog_id = $request->catalog_id; //$request
     $item = DB::table('registers')->join('catalogs','registers.catalog_number','=','catalogs.catalog_number')
     ->where('registers.catalog_id',$catalog_id)->first();
     return view('document_delete',['item'=>$item]);
@@ -128,26 +128,27 @@ class RegisterCatalogController extends Controller
       'arrival_date' => $request->arrival_date,
     ];
     // 自動増分したカタログIDを取得かつ新規資料データをinsert
-    $catalog_id = DB::table('registers')->insertGetId($register_param, 'catalog_id');
-    $document_param = [
-      'catalog_id' => $catalog_id,
-      'catalog_number' => $request->catalog_number,
-    ];
-    DB::table('documents')->insert($document_param);
-    // 同じ本がない場合はcatalogsテーブルにもろもろinsertし、同じ本がある場合はcatalogsテーブルの更新をしない
-    if (DB::table('catalogs')->where('catalog_number', $request->catalog_number)->doesntExist()){
-      $catalogs_param = [
+      $catalog_id = DB::table('registers')->insertGetId($register_param, 'catalog_id');
+      $document_param = [
+        'catalog_id' => $catalog_id,
         'catalog_number' => $request->catalog_number,
-        'catalog_name' => $request->catalog_name,
-        'catalog_code' => $request->catalog_code,
-        'catalog_author' => $request->catalog_author,
-        'catalog_publishername' => $request->catalog_publishername,
-        'catalog_publication' => $request->catalog_publication,
       ];
-      DB::table('catalogs')->insert($catalogs_param);
-    }
-    $add_document_data = $request->all();
-    $request->session()->put($add_document_data);
+      DB::table('documents')->insert($document_param);
+      // 同じ本がない場合はcatalogsテーブルにもろもろinsertし、同じ本がある場合はcatalogsテーブルの更新をしない
+      if (DB::table('catalogs')->where('catalog_number', $request->catalog_number)->doesntExist()){
+        $catalogs_param = [
+          'catalog_number' => $request->catalog_number,
+          'catalog_name' => $request->catalog_name,
+          'catalog_code' => $request->catalog_code,
+          'catalog_author' => $request->catalog_author,
+          'catalog_publishername' => $request->catalog_publishername,
+          'catalog_publication' => $request->catalog_publication,
+        ];
+        DB::table('catalogs')->insert($catalogs_param);
+      }
+      $add_document_data = $request->all();
+      $request->session()->put($add_document_data);
+    
     return view('document_add_complete', compact("add_document_data"));
   }
 
@@ -159,6 +160,23 @@ class RegisterCatalogController extends Controller
 
   public function find_document(Request $request){
 
+   //バリデーション資料名が入力されているかチェック
+  $catalog_search_rules = [
+    'catalog_name' => 'required|max:50',
+  ];
+
+  $catalog_search_messages = [
+    'catalog_name.required' => '資料名は必ず入力して下さい。',
+    'catalog_name.max' => '資料名は50文字以内で入力してください。'
+  ];
+  $validator = Validator::make($request->all(), $catalog_search_rules,
+  $catalog_search_messages);
+
+  if ($validator->fails()) {
+    return redirect('/document_search')
+    ->withErrors($validator)
+    ->withInput();
+  }
   ////catalogsテーブルから検索する
   ///キーワード検索機能
   $catalog=Catalog::where("catalog_name",'LIKE',"%".$request->catalog_name."%")->get();
@@ -166,7 +184,7 @@ class RegisterCatalogController extends Controller
   for($i = 0;$i < count($catalog);$i++) {
     $document_count += DB::table('documents')->where('catalog_number', $catalog[$i]->catalog_number)->count();
   }
-  return view('document_search_result',['catalog_name'=>$catalog,'search_count'=>$document_count]);
+  return view('document_search_result',['catalog_name'=>$catalog,'search_count'=>$document_count, 'search_name' => $request->catalog_name]);
   }
 
   //資料変更機能
@@ -179,6 +197,27 @@ class RegisterCatalogController extends Controller
   //資料変更確認機能
   public function edit_document_check(Request $request){
   // ここにバリデーションを追記
+    $catalog_search_rules = [
+      'catalog_name' => 'required|max:50',
+      'disposal_date' => 'nullable|date',
+      'catalog_remark' => 'max:200',
+    ];
+
+    $catalog_search_messages = [
+      'catalog_name.required' => '資料名は必ず入力して下さい。',
+      'catalog_name.max' => '資料名は50文字以内で入力してください。',
+      'disposal_date.date' => '廃棄年月日は日付の形式で入力してください(yyyy/mm/dd)',
+      'catalog_remark' => '備考は200文字以内で入力してください。',
+    ];
+    $validator = Validator::make($request->all(), $catalog_search_rules,
+    $catalog_search_messages);
+
+    if ($validator->fails()) {
+      return redirect('/document_change?catalog_id=' . $request->catalog_id)
+      ->withErrors($validator)
+      ->withInput();
+    }
+
     return view('document_change_confirming',['register_data'=>$request]);
   }
  ///栗山先生追記部分

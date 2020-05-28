@@ -8,7 +8,10 @@
   @csrf
   <p>検索したい資料名を入力してください。</p>
   <input type="search" name="catalog_name" placeholder="資料名を入力">
-  <input type="submit" value="検索" name="search_button" class="next_button">　</button>
+  <input type="submit" value="検索" name="search_button" class="next_button"><br>
+  @error('catalog_name')
+  <span class="errorMsg">{{$message}}</span>
+  @enderror
 </form>
 
 {{--戻るボタン--}}

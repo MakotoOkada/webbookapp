@@ -7,6 +7,7 @@ use App\Member;
 use App\Rental;
 use App\Document;
 use App\Catalog;
+use App\Register;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
 use App\Http\Requests\RentalReturnRequest;
@@ -72,8 +73,7 @@ class RentalReturnController extends Controller
                 ->withErrors($validator)
                 ->withInput();
             }
-
-            $catalog = Document::find($request->catalog_id);
+           
             //貸出中のもを借りないようにする処理
             $rental_returndate_value = DB::table('rentals')->select('rental_id')->where('catalog_id',$request->catalog_id)->orderBy('rental_id', 'desc')->first();
             //テーブルに何かしらデータがあるときの処理
@@ -86,7 +86,17 @@ class RentalReturnController extends Controller
                         ->withInput();
                 }    
             }
-            
+
+            //廃棄された資料は借りれないようにする
+            $disposal_date = DB::table('registers')->select('disposal_date')->where('catalog_id', $request->catalog_id)->first();
+            if($disposal_date->disposal_date !== NULL) {
+                $validator->errors()->add('disposal_date', 'この資料は存在しません。');
+                    return redirect('/circulation_check?user_id=' . $request->user_id)
+                    ->withErrors($validator)
+                    ->withInput();
+            }
+
+            $catalog = Document::find($request->catalog_id);
             //借りる本が新刊本かそれ以外かを調べる処理
             $publication = DB::table('catalogs')->select('catalog_publication')->where('catalog_number', $catalog->catalog_number)->first();
             $dt_p = new Carbon($publication->catalog_publication);

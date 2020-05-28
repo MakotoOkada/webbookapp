@@ -6,7 +6,7 @@
 <form action="circulation_check" method="post">
     @csrf
     <table border="1" class="confirm_table">
-        <tr><th>会員ID</th><td><input type="number" name="user_id" value="{{$data['user_id']}}"><br>
+        <tr><th>会員ID</th><td><input type="number" name="user_id" value="{{$data['user_id']}}" required><br>
         @error('user_id')
             <span class="errorMsg">{{$message}}</span>
         @enderror
@@ -20,11 +20,14 @@
 <form action="circulation_check" method="post">
     @csrf
     <table border="1" class="confirm_table">
-        <tr><th>資料ID</th><td><input type="number" name="catalog_id" value="{{old('catalog_id')}}"><br>
+        <tr><th>資料ID</th><td><input type="number" name="catalog_id" value="{{old('catalog_id')}}" required><br>
         @error('catalog_id')
             <span class="errorMsg">{{$message}}</span>
         @enderror
         @error('no_return')
+            <span class="errorMsg">{{$message}}</span>
+        @enderror
+        @error('disposal_date')
             <span class="errorMsg">{{$message}}</span>
         @enderror
         </td>

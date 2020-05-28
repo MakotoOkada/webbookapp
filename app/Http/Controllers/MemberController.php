@@ -83,11 +83,34 @@ class MemberController extends Controller
    }
 
    public function edit_member_check(Request $request){
-     $this->validate($request, Member::$edit_member_rules, Member::$edit_member_messages);
-     $edit_member_data = $request->all();
-     $request->session()->put($edit_member_data);
-     return view('member_edit_confirming', compact("edit_member_data"));
-   }
+    $user_id = $request->user_id;
+    $_user_email = DB::table('members')->where('user_id', $user_id)->value('user_email');
+    $user_email = 'email|max:50|required|unique:members,user_email,'.$_user_email.',user_email';
+    $edit_member_rules = array(
+        'user_name'  => 'max:50|required',
+        'user_address' => 'max:200|required',
+        'user_tel' => 'max:20|required',
+        'user_email' => $user_email,
+    );
+    $edit_member_messages = array(
+        'user_name.max' => '名前は50文字以下にしてください',
+        'user_name.required' => '名前は必須です',
+        'user_address.max' => '住所は200文字以下にしてください',
+        'user_address.required' => '住所は必須です',
+        'user_tel.required' => '電話番号は必須です',
+        'user_tel.max' => '電話番号は:max文字以下で入力してください',
+        'user_email.email' => 'メールアドレスの形式にしてください',
+        'user_email.max' => 'メールアドレスは50文字以下にしてください',
+        'user_email.required' => 'メールアドレスは必須です',
+        'user_email.unique' => 'このメールアドレスには変更できません',
+    );
+    $this->validate($request, $edit_member_rules, $edit_member_messages);
+    // $this->validate($request, Member::$edit_member_rules, Member::$edit_member_messages);
+    $edit_member_data = $request->all();
+    // echo($request->user_email);
+    $request->session()->put($edit_member_data);
+    return view('member_edit_confirming', compact("edit_member_data"));
+  }
 
    public function update_member(Request $request){
      $edit_member_data = $request->all();

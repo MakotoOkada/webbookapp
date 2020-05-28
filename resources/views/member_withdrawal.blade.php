@@ -42,7 +42,7 @@
   <div>
   <form class="" action="member_withdrawal_complete" method="post">
       @csrf
-      <input type="hidden" name="user_deleteday" value="{{date('y/m/d')}}">
+      <input type="hidden" name="user_deleteday" value="{{date('Y/m/d')}}">
       <input type="hidden" name="user_id" value="{{$item->user_id}}">
       <button type="submit" class="next_button">退会する</button>
     </form> 

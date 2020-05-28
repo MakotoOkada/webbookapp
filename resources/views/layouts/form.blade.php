@@ -17,8 +17,9 @@
   }
   table.document_result{
     margin-left: 1.5rem;
-    width: 100%;
     border-collapse: collapse;
+    margin: auto;
+    text-align: center;
     /* table-layout: fixed; */
   }
   table.document_result th, table.document_result td{
@@ -31,6 +32,9 @@
   }
   table.document_result td:first-child, table.document_result td:nth-child(3), table.document_result td:nth-child(6),table.document_result td:nth-child(7),table.document_result td:nth-child(8), table.document_result td:last-child{
    width:calc(100% - 1rem);
+  }
+  table.document_result td:nth-child(3), table.document_result td:nth-child(7), table.document_result td:nth-child(8), table.document_result td:last-child{
+    text-align: center;
   }
   table {
     /* margin-left: 250px; */

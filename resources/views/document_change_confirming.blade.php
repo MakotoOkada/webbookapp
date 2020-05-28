@@ -26,7 +26,7 @@
 <div class="button_wrap">
 
 {{--検索画面へ戻るボタン--}}
-  <button type="button" name="search_button" class="back_button" onclick="location.href='./document_search'">検索画面へ</button>
+<button type="button" name="search_button" class="back_button" onclick="history.back()">戻る</button>
 
 {{--確認完了画面へボタン--}}
 <form class="" action="document_change_complete" method="post">

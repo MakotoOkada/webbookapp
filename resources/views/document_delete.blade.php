@@ -42,7 +42,7 @@
       </td>
     </tr>
     <tr>
-      <th>備考</th><td><textarea name="catalog_remark" rows="4" cols="22"></textarea><br>
+      <th>備考</th><td><textarea name="catalog_remark" rows="4" cols="22">{{$item->catalog_remark}}</textarea><br>
       @error('catalog_remark')
         <span class="errorMsg">{{$message}}</span>
       @enderror
@@ -51,7 +51,7 @@
     <input type="hidden" name="catalog_id" value="{{$item->catalog_id}}">
   </table>
   <div class="button_wrap">
-    <p><button type="button" name="back" class="back_button" onclick="histry()">戻る</button></p>
+    <p><button type="button" name="back" class="back_button" onclick="history.back()">戻る</button></p>
     <p><input type="submit" class="next_button" value="削除する"></p>
   </div>
 </form>
